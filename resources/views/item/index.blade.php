@@ -14,6 +14,14 @@
                     <h3 class="card-title">商品一覧</h3>
                     <div class="card-tools">
                         <div class="input-group input-group-sm">
+                            <form action="{{ route('items.search') }}" method="GET" class="form-inline">
+                                <div class="input-group">
+                                    <input type="text" name="query" class="form-control" placeholder="商品名または詳細で検索" required value="{{ request()->input('query') }}">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">検索</button>
+                                    </div>
+                                </div>
+                            </form>
                             <div class="input-group-append">
                                 <a href="{{ url('items/add') }}" class="btn btn-default">商品登録</a>
                             </div>
@@ -52,3 +60,4 @@
 
 @section('js')
 @stop
+

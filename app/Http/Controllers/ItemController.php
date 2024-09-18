@@ -18,16 +18,22 @@ class ItemController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * 商品一覧
-     */
-    public function index()
-    {
-        // 商品一覧取得
-        $items = Item::all();
-
-        return view('item.index', compact('items'));
-    }
+        public function index()
+        {
+            $items = Item::all(); // 商品一覧を取得
+            return view('item.index', compact('items'));
+        }
+    
+        public function search(Request $request)
+        {
+            $query = $request->input('query');
+            $items = Item::where('name', 'LIKE', "%{$query}%")
+                ->orWhere('detail', 'LIKE', "%{$query}%")
+                ->orderBy('name')
+                ->get();
+    
+            return view('item.index', compact('items'));
+        }
 
     /**
      * 商品登録
@@ -55,3 +61,4 @@ class ItemController extends Controller
         return view('item.add');
     }
 }
+
