@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,13 @@ Route::prefix('items')->group(function () {
     
 });
 
+Route::get('/items/{id}/edit', [ItemController::class, 'edit'])->name('items.edit');
+Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
+Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('user', [UserController::class, 'index'])->name('user.index'); // ユーザー一覧
+    Route::get('user/{id}/edit', [UserController::class, 'edit'])->name('user.edit'); // ユーザー編集画面
+    Route::put('user/{id}', [UserController::class, 'update'])->name('user.update'); // ユーザー情報更新
+    Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy'); // ユーザー削除
+});

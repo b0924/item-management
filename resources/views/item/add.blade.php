@@ -25,17 +25,24 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="name">名前</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="名前">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="名前" required>
                         </div>
 
                         <div class="form-group">
                             <label for="type">種別</label>
-                            <input type="text" class="form-control" id="type" name="type" placeholder="種別">
+                            <select class="form-control" id="type" name="type" required>
+                                <option value="">-- 種別を選択 --</option>
+                                <option value="ギター">ギター</option>
+                                <option value="ベース">ベース</option>
+                                <option value="ドラム">ドラム</option>
+                                <option value="マイク">マイク</option>
+                                <option value="キーボード">キーボード</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
                             <label for="detail">詳細</label>
-                            <input type="text" class="form-control" id="detail" name="detail" placeholder="詳細説明">
+                            <input type="text" class="form-control" id="detail" name="detail" placeholder="詳細説明" required>
                         </div>
                     </div>
 

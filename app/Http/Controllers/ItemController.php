@@ -8,46 +8,46 @@ use App\Models\Item;
 
 class ItemController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-        public function index()
-        {
-            $items = Item::all(); // 商品一覧を取得
-            return view('item.index', compact('items'));
-        }
-    
-        public function search(Request $request)
-        {
-            $query = $request->input('query');
-            $items = Item::where('name', 'LIKE', "%{$query}%")
-                ->orWhere('detail', 'LIKE', "%{$query}%")
-                ->orderBy('name')
-                ->get();
-    
-            return view('item.index', compact('items'));
-        }
+    public function index()
+    {
+        $items = Item::orderBy('id', 'asc')->get(); // 商品をID順で取得
+        return view('item.index', compact('items'));
+    }
 
-    /**
-     * 商品登録
-     */
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+    
+    // 検索条件を作成
+    $items = Item::where('name', 'LIKE', "%{$query}%")
+        ->orWhere('detail', 'LIKE', "%{$query}%")
+        ->orderByRaw("CASE 
+            WHEN name LIKE '{$query}%' THEN 1 
+            WHEN name LIKE '%{$query}%' THEN 2 
+            WHEN detail LIKE '{$query}%' THEN 3 
+            WHEN detail LIKE '%{$query}%' THEN 4 
+            ELSE 5 
+        END")
+        ->get();
+
+    return view('item.index', compact('items'));
+}
+
+
     public function add(Request $request)
     {
-        // POSTリクエストのとき
         if ($request->isMethod('post')) {
-            // バリデーション
             $this->validate($request, [
                 'name' => 'required|max:100',
+                'type' => 'required',
+                'detail' => 'required',
             ]);
 
-            // 商品登録
             Item::create([
                 'user_id' => Auth::user()->id,
                 'name' => $request->name,
@@ -55,10 +55,40 @@ class ItemController extends Controller
                 'detail' => $request->detail,
             ]);
 
-            return redirect('/items');
+            return redirect()->route('items.index')->with('success', '商品が登録されました');
         }
 
         return view('item.add');
     }
-}
 
+    public function edit($id)
+    {
+        $item = Item::findOrFail($id);
+        return view('item.edit', compact('item'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'detail' => 'required|string',
+        ]);
+
+        $item = Item::findOrFail($id); // ここでアイテムを取得
+        $item->name = $request->name;
+        $item->type = $request->type;
+        $item->detail = $request->detail;
+        $item->save(); // 保存
+
+        return redirect()->route('items.index')->with('success', '商品が更新されました');
+    }
+
+    public function destroy($id)
+    {
+        $item = Item::findOrFail($id);
+        $item->delete();
+
+        return redirect()->route('items.index')->with('success', '商品が削除されました');
+    }
+}
