@@ -20,32 +20,31 @@ class ItemController extends Controller
     }
 
     public function search(Request $request)
-{
-    $query = $request->input('query');
-    
-    // 検索条件を作成
-    $items = Item::where('name', 'LIKE', "%{$query}%")
-        ->orWhere('detail', 'LIKE', "%{$query}%")
-        ->orderByRaw("CASE 
-            WHEN name LIKE '{$query}%' THEN 1 
-            WHEN name LIKE '%{$query}%' THEN 2 
-            WHEN detail LIKE '{$query}%' THEN 3 
-            WHEN detail LIKE '%{$query}%' THEN 4 
-            ELSE 5 
-        END")
-        ->get();
+    {
+        $query = $request->input('query');
 
-    return view('item.index', compact('items'));
-}
+        // 検索条件を作成
+        $items = Item::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('detail', 'LIKE', "%{$query}%")
+            ->orderByRaw("CASE 
+                WHEN name LIKE '{$query}%' THEN 1 
+                WHEN name LIKE '%{$query}%' THEN 2 
+                WHEN detail LIKE '{$query}%' THEN 3 
+                WHEN detail LIKE '%{$query}%' THEN 4 
+                ELSE 5 
+            END")
+            ->get();
 
+        return view('item.index', compact('items'));
+    }
 
     public function add(Request $request)
     {
         if ($request->isMethod('post')) {
             $this->validate($request, [
-                'name' => 'required|max:100',
-                'type' => 'required',
-                'detail' => 'required',
+                'name' => 'required|string|max:100', // 名前の文字数制限
+                'type' => 'required|string|max:50', // タイプの文字数制限（必要に応じて変更）
+                'detail' => 'required|string|max:255', // 詳細の文字数制限
             ]);
 
             Item::create([
@@ -70,9 +69,9 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'detail' => 'required|string',
+            'name' => 'required|string|max:100', // 名前の文字数制限
+            'type' => 'required|string|max:50', // タイプの文字数制限（必要に応じて変更）
+            'detail' => 'required|string|max:255', // 詳細の文字数制限
         ]);
 
         $item = Item::findOrFail($id); // ここでアイテムを取得
@@ -92,3 +91,4 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('success', '商品が削除されました');
     }
 }
+
