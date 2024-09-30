@@ -18,7 +18,7 @@
 - PHP 8.2
 - MySQL 5.7.39
 - Laravel 10.10
-,,,
+
 
 ## 設計書
 [設計書ページへ](https://drive.google.com/drive/folders/1BZSxf_Z6Ij7Vn_Gl-JclxAxj3yJ1V-Rm?usp=drive_link)
@@ -27,10 +27,10 @@
 [アプリケーションページへ](https://items-management-df89cd516b24.herokuapp.com)
 
 ## テストアカウント
-,,,
-メールアドレス : admin021@gmail.com
-パスワード : sample123456
 
-,,,
+- メールアドレス : admin021@gmail.com
+- パスワード : sample123456
+
+
 
 
